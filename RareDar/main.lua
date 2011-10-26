@@ -143,7 +143,7 @@ local function printUnits(units)
 end
 
 -- The rare entered!
-table.insert(Event.Unit.Add, printUnits)
+table.insert(Event.Unit.Add, {printUnits, "RareDar", "check"})
 
 -- The rare left!
-table.insert(Event.Unit.Remove, printUnits)
+table.insert(Event.Unit.Remove, {printUnits, "RareDar", "check"})
