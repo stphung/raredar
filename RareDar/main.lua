@@ -182,7 +182,7 @@ local function display_notification(bar, text)
    bar.solid:SetBackgroundColor(0.5, 0.3, 0.9, 0.4)
 
    -- Set to the center of the screen
-   bar:SetPoint("TOPCENTER", UIParent, "TOPCENTER", -bar.text:GetFullWidth()/2, 20)
+   bar:SetPoint("TOPCENTER", UIParent, "TOPCENTER", -bar.text:GetFullWidth()/2, 60)
 
    bar:SetVisible(true)
 end
