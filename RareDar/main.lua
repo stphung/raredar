@@ -10,7 +10,7 @@ local function Set(list)
 end
 
 -- A table of all the rares
-rares = Set{
+all_rares = Set{
    "Raging Warmachine",
    "Defiant Assassin",
    "Gizzit",
@@ -118,32 +118,99 @@ rares = Set{
    "Experimental War Golem",
    "The Endless Broodmother",
    "Jom Turner",
-   "Azumel the Screecher"
+   "Azumel the Screecher",
+   "Coastal Stalker"
 }
 
 --- Determines whether a list of units contains a rare.
 --
 -- @param units The list of units
 -- @param rares The list of rare units
-local function contains_rare(units, rares)
-   res = false
-   for k,v in ipairs(units) do
-      res = res or rares[v]
-   end
-   return res
-end
-
---- Test function for testing the event behavior.
---
--- @param units The list of units
-local function printUnits(units)
+local function get_rares(units, all_rares)
+   rares = {}
    for k,v in pairs(units) do
-      print(k .. " => " .. v)
+--      print(k, type(k), v, type(v))
+      if k ~= nil and type(k) == "string" then
+         unit_name = Inspect.Unit.Detail(k)["name"]
+         if all_rares[unit_name] then
+--            print("Rare Found! => " .. unit_name)
+            table.insert(rares, unit_name)
+         end
+      end
+   end
+   return rares
+end
+
+local function print_table(table)
+   for k,v in pairs(table) do
+      if type(k) == "table" then
+         print_table(k)
+      else
+         print(k, "=>", v)
+      end
    end
 end
 
--- The rare entered!
-table.insert(Event.Unit.Add, {printUnits, "RareDar", "check"})
+local function print_units(units)
+   get_rares(units, all_rares)
+end
 
--- The rare left!
-table.insert(Event.Unit.Remove, {printUnits, "RareDar", "check"})
+-- Global variables, sigh :(
+local time = Inspect.Time.Real()
+local context = UI.CreateContext("raredar_context")
+local bar = UI.CreateFrame("Frame", "Bar", context)
+bar.solid = UI.CreateFrame("Frame", "Solid", bar)
+bar.text = UI.CreateFrame("Text", "Text", bar)
+
+local function display_notification(bar, text)
+   -- Set an initial vertical pin to make some of our calculations work properly
+   bar:SetPoint("TOP", UIParent, "TOP")
+   bar:SetPoint("BOTTOM", bar.text, "BOTTOM")  -- The bar is set to always be as high as the text is.
+
+   -- Text
+   bar.text:SetFontSize(25)
+   bar.text:SetText(text)
+   bar.text:SetHeight(bar.text:GetFullHeight())
+   bar.text:SetWidth(bar.text:GetFullWidth())
+   bar.text:SetPoint("TOPLEFT", bar, "TOPLEFT")
+
+   -- Solid background
+   bar.solid:SetLayer(-1)  -- Put it behind every other element.
+   bar.solid:SetWidth(bar.text:GetFullWidth())
+   bar.solid:SetPoint("TOPLEFT", bar, "TOPLEFT")
+   bar.solid:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
+   bar.solid:SetBackgroundColor(0.5, 0.3, 0.9, 0.4)
+
+   -- Set to the center of the screen
+   bar:SetPoint("TOPCENTER", UIParent, "TOPCENTER", -bar.text:GetFullWidth()/2, 20)
+
+   bar:SetVisible(true)
+end
+
+local function hide_notification(bar)
+   bar:SetVisible(false)
+end
+
+local function rare_notification(units)
+   rares = get_rares(units, all_rares)
+
+   if table.getn(rares) > 0 then
+--      print_table(rares)
+      time = Inspect.Time.Real()
+      msg = rares[1] .. " found!"
+      print("Ping! " .. msg)
+      display_notification(bar, msg)
+   end
+end
+
+local function fade_notification()
+   if Inspect.Time.Real() - time > 10 then
+      hide_notification(bar)
+   end
+end
+
+-- Display a notification
+table.insert(Event.Unit.Available, {rare_notification, "RareDar", "rare_notification"})
+
+-- Try to fade out the notification periodically
+table.insert(Event.System.Update.Begin, {fade_notification, "RareDar", "fade_notification"})
