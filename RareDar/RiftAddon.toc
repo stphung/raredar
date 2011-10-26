@@ -1,8 +1,8 @@
-Identifier = "Raredar"
+Identifier = "RareDar"
 
 -- Each addon needs a human-readable name. Languages are not currently supported but they will be soon.
 Name = {
-  English = "Raredar"
+  English = "RareDar"
 }
 
 -- It's recommended that you include a description, author, and website. These aren't required but they will be shown to users when enabling your addon.
