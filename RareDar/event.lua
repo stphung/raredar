@@ -2,7 +2,6 @@
 -- Mapping of event handlers to event types.
 --------------------------------------------------------------------------------
 
-
 -- Notification display
 table.insert(Event.Unit.Available, {show_notification_from_units, "RareDar", "Display Notification"})
 
