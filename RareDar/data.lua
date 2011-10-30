@@ -45,7 +45,7 @@ all_rares = Set{
    "Stone Rend",
    "Stridal",
    "Xoxtillus",
-   "XT-300",
+   "XT-300 Lifter",
    "Browncap Cutter",
    "Dozer",
    "Gnarl Nighthunter",
