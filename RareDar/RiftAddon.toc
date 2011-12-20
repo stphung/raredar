@@ -10,11 +10,11 @@ Description = {
 Author = "stphung"
 Website = "stevenphung.org"
 
-Version = "0.1"
+Version = "0.1.2"
 
 Email = "stphung@gmail.com"
 
-Environment = "1.5"
+Environment = "1.6"
 
 RunOnStartup = {
   "data.lua",

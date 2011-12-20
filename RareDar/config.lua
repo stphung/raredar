@@ -1,3 +1,5 @@
+local RareDar, private = ...
+
 --------------------------------------------------------------------------------
 -- Configuration variables which define notification position and appearance.
 --------------------------------------------------------------------------------

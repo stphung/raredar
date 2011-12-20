@@ -1,3 +1,5 @@
+local RareDar, private = ...
+
 --------------------------------------------------------------------------------
 -- Notification frame building function.
 --------------------------------------------------------------------------------
@@ -39,7 +41,7 @@ function display_notification(text, horizontal_padding, horizontal_offset, red, 
    bar.solid:SetLayer(-1)  -- Put it behind every other element.
    bar.solid:SetWidth(bar.text:GetFullWidth()+horizontal_padding*2)
    bar.solid:SetPoint("TOPLEFT", bar, "TOPLEFT")
-   bar.solid:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
+--   bar.solid:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
    -- TODO: Custom color configuration.
    bar.solid:SetBackgroundColor(red, green, blue, alpha)
 

@@ -1,3 +1,5 @@
+local RareDar, private = ...
+
 --------------------------------------------------------------------------------
 -- A single state variable and functions for controlling notification display.
 --------------------------------------------------------------------------------
