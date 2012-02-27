@@ -26,9 +26,19 @@ function get_rares(units, all_rares)
    rares = {}
    for k,v in pairs(units) do
       if k ~= nil and type(k) == "string" then
-         unit_name = Inspect.Unit.Detail(k)["name"]
-         if all_rares[unit_name] then
-            table.insert(rares, unit_name)
+         -- Check that the unit is neither a player nor a pet as
+         -- both players and pets can have the same name as rare mobs
+         -- TODO: Check API reference for better way (than searching
+         -- the secondary name for the word Pet) to check if the unit
+         -- is a pet or not.
+         local detail = Inspect.Unit.Detail(k)
+         secname = detail["nameSecondary"]
+         if not detail["player"] and
+            (secname == nil or not string.find(secname, " Pet")) then
+            unit_name = detail["name"]
+            if all_rares[unit_name] then
+               table.insert(rares, unit_name)
+            end
          end
       end
    end
