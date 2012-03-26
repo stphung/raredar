@@ -18,6 +18,13 @@ local raremobachvs={
 	"c041CBB02DEA774CE",	-- ember isle
 }
 
+-- We have to call this function twice, once when the addon is initialized,
+-- and again when we get an achievement. When Rift first starts,
+-- achivement data isn't loaded yet (but we get an Event when the data
+-- becomes available); when we do a /reloadui, the data is there but
+-- we don't get the event. So we really have to call this from both
+-- places.
+
 local function updateachv(achv)      
   local y=Inspect.Achievement.Detail(achv)
   local lang=Inspect.System.Language()
@@ -44,9 +51,9 @@ local function init(addon)
       print("loaded!  We'll do our best to let you know when we find a rare mob!")
       RareDar_createUI()
       local id,achv
---      for id,achv in ipairs(raremobachvs) do
---        updateachv(id)
---      end
+      for id,achv in ipairs(raremobachvs) do
+        updateachv(achv)
+      end
    end
 end
 
