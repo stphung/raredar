@@ -212,12 +212,23 @@ end
 
 function RareDar_SetZoneMobs(list)
 	local str=""
+	local message=""
 	local n=0
+        local max = table.maxn(list)
 	for i,name in ipairs(list) do
 		n=i
 		str=str .. "target " .. name .. "\n"
+                if (n > 1) then
+                        if (n == max) then
+                                message=message .. " and "
+                        else
+                                message=message .. ", "
+                        end
+                end
+                message=message .. name
 	end
 	if (n>0) then
+	        print(message .. " might be close")
 		miniWindow.itembtn:SetTexture("RareDar", "radargreen.png")
 	else
 		miniWindow.itembtn:SetTexture("RareDar", "radarred.png")
@@ -232,7 +243,7 @@ function RareDar_SetCloseMobs()
    and (player.locationName ~= nil)		-- while porting
    and (player.locationName ~= lastLocationName) then
       local lang=Inspect.System.Language()
-      print ("Location is now "..player.locationName)
+      --print ("Location is now "..player.locationName)
       local moblist={}
       for name, info in pairs(RareDar_rares[lang]) do
          if info then
@@ -240,10 +251,13 @@ function RareDar_SetCloseMobs()
 	     --dump(info)
 	 end
          if info
-	 and (     info[1] == player.locationName and info[2] == ""
-		or info[2] == player.locationName               
+	 and (
+-- TODO: temporary disabled the condition below as it gave too many
+--       printouts about rare mob beeing close but actually is not.
+--       Is there any better way to locate close mobs?
+--     info[1] == player.locationName and info[2] == "" or
+               info[2] == player.locationName
 	     ) then
-	    print(name .. " might be close")
 	    table.insert(moblist, name)
 	 end
       end
