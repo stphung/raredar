@@ -7,14 +7,18 @@ Name = {
 Description = {
   English = "An addon designed for hunting down the many rares in Telara."
 }
-Author = "stphung"
-Website = "stevenphung.org"
+
+-- Original author:
+-- Author = "stphung"
+-- Website = "stevenphung.org"
+-- Email = "stphung@gmail.com"
+
+-- Current maintainer of RareDar
+Email = "karl_johan_karlsson@yahoo.se"
 
 Version = "0.2"
 
-Email = "stphung@gmail.com"
-
-Environment = "1.6"
+Environment = "1.7"
 
 SavedVariables = {
    RareDar = 'global',
