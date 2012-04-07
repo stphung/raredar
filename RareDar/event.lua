@@ -68,7 +68,6 @@ local function gotachv(tab)
   end
 end
 
-
 table.insert(Event.Achievement.Update, { gotachv, "RareDar", "gotachv" })
 table.insert(Event.Addon.Load.End, {init, "RareDar", "Initialization"})
 
@@ -82,3 +81,40 @@ end
 
 table.insert(Event.System.Secure.Enter, { enterSecure, "RareDar", "EnterSecure" })
 table.insert(Event.System.Secure.Leave, { leaveSecure, "RareDar", "LeaveSecure" })
+
+local function help()
+   print("Usage: /raredar [option]:")
+   print("    show: show the main window")
+   print("    hide: hide the main window")
+end
+
+local function process(param)
+   --print(param)
+   if (param ~= nil) and (param ~= "") then
+      
+      local found = false;
+   
+      if param == "help" then 
+         help() 
+         found = true
+      end
+      
+      if param == "hide" then 
+         RareDar_hideMiniWindow() 
+         found = true
+      end 
+      
+      if param == "show" then 
+         RareDar_showMiniWindow()
+         found = true
+      end 
+      
+      if not found then
+         print("Unknown option [" .. param .."] type /raredar help for valid options")
+      end
+   else
+      help()
+   end
+end;
+
+table.insert(Command.Slash.Register("raredar"), {function (params) process(params) end, "RareDar", "Slash command"})

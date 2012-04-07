@@ -29,6 +29,18 @@ local function hideZoneMenu()
 	end
 end
 
+function RareDar_showMiniWindow()
+	RareDar.show = true
+	miniWindow:SetVisible(true)
+	print("showing main window.")
+end
+
+function RareDar_hideMiniWindow()
+	RareDar.show = false
+	miniWindow:SetVisible(false)
+	print("hiding main window.")
+end
+
 -- fill mobs to the cycle array in 2 passes. First pass, add all mobs
 -- that have index numbers, 2nd pass, add those that don't. So we can
 -- use indexes where we have them defined, but we don't need to define
@@ -76,7 +88,7 @@ local function buildMiniWindow()
 	miniWindow:SetWidth(150)
 	miniWindow:SetHeight(50)
 	miniWindow:SetBackgroundColor(0.1, 0.1, 0.1, 0.8)
-	miniWindow:SetVisible(true)
+	miniWindow:SetVisible(RareDar.show)
 	miniWindow:SetSecureMode("restricted")
 	miniWindow.state={}
 	function miniWindow.Event:LeftDown()

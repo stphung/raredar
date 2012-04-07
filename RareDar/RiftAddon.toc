@@ -21,7 +21,7 @@ Version = "0.2"
 Environment = "1.7"
 
 SavedVariables = {
-   RareDar = 'global',
+   RareDar = "account",
 }
 
 RunOnStartup = {

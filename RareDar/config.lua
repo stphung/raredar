@@ -3,6 +3,8 @@
 --------------------------------------------------------------------------------
 RareDar = RareDar or {}
 
+RareDar.show = RareDar.show or true
+
 RareDar.xpos = RareDar.xpos or 100
 RareDar.ypos = RareDar.ypos or 100
 
