@@ -146,6 +146,7 @@ local function buildMiniWindow()
 	local lang=Inspect.System.Language()
 	local zoneNames={}
 	local zoneNameHash={}
+        local zoneFound = true
 	for name,info in pairs(RareDar_rares[lang]) do
 		if info ~= false and not zoneNameHash[info[1]] then
 			zoneNameHash[info[1]]=1
@@ -153,6 +154,11 @@ local function buildMiniWindow()
 		end
 	end
 	table.sort(zoneNames);
+        if next(zoneNames) == nil then
+                table.insert(zoneNames, "Missing zone names in ")
+                table.insert(zoneNames, lang.." localization")
+                zoneFound = false
+        end
 	for i,name in ipairs(zoneNames) do
 		miniWindow.zoneMenu[i]=UI.CreateFrame("Text", "menu"..i, miniWindow)
 		miniWindow.zoneMenu[i]:SetText(name)
@@ -165,15 +171,17 @@ local function buildMiniWindow()
 		else
 			miniWindow.zoneMenu[i]:SetPoint("TOPLEFT", miniWindow.zoneMenu[i-1], "BOTTOMLEFT", 0, 0)
 		end
-		miniWindow.zoneMenu[i].Event.LeftClick=function()
-			zoneMenuClick(name)
-		end
-		miniWindow.zoneMenu[i].Event.MouseIn=function()
-			miniWindow.zoneMenu[i]:SetBackgroundColor(0, 0, 0.5, 1)
-		end
-		miniWindow.zoneMenu[i].Event.MouseOut=function()
-			miniWindow.zoneMenu[i]:SetBackgroundColor(0, 0, 0, 1)
-		end
+                if zoneFound then
+		        miniWindow.zoneMenu[i].Event.LeftClick=function()
+                                zoneMenuClick(name)
+		        end
+		        miniWindow.zoneMenu[i].Event.MouseIn=function()
+			        miniWindow.zoneMenu[i]:SetBackgroundColor(0, 0, 0.5, 1)
+		        end
+		        miniWindow.zoneMenu[i].Event.MouseOut=function()
+			        miniWindow.zoneMenu[i]:SetBackgroundColor(0, 0, 0, 1)
+		        end
+                end
 	end
 	
 	miniWindow.cycle=UI.CreateFrame("Frame", "Cycle", miniWindow)
