@@ -49,6 +49,7 @@ end
 local function init(addon)
    if addon == "RareDar" then
       print("loaded!  We'll do our best to let you know when we find a rare mob!")
+      print("Type /raredar for options.")
       RareDar_createUI()
       local id,achv
       for id,achv in ipairs(raremobachvs) do
