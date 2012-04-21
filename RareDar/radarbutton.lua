@@ -1,15 +1,26 @@
 local miniWindow
 local cycle, cyclepos
+local lastCoordX = 0
+local lastCoordZ = 0
+local lastShownMessage = nil
 
+-- A array for the cycle data.
+-- Format of the array is:
+-- [1] xccord
+-- [2] ycoord
+-- [3] index
+-- [4] zone
+-- [5] rare name
+-- [6] achiev
 local function updatecycleinfo(i)
-	miniWindow.cycle.xpos:SetText(tostring(cycle[i][3]))
-	miniWindow.cycle.ypos:SetText(tostring(cycle[i][4]))
-	miniWindow.cycle.mobName:SetText(cycle[i][6])
-	miniWindow.cycle.mobArea:SetText(cycle[i][2])
-	miniWindow.cycle.mobName.Event.LeftDown="/target "..cycle[i][6]
-	if cycle[i][7] == true then
+	miniWindow.cycle.xpos:SetText(tostring(cycle[i][1]))
+	miniWindow.cycle.ypos:SetText(tostring(cycle[i][2]))
+	miniWindow.cycle.mobName:SetText(cycle[i][5])
+	miniWindow.cycle.mobArea:SetText(cycle[i][4])
+	miniWindow.cycle.mobName.Event.LeftDown="/target "..cycle[i][5]
+	if cycle[i][6] == true then
 		miniWindow.cycle.mobName:SetFontColor(0, 1, 0)
-	elseif cycle[i][7] == false then
+	elseif cycle[i][6] == false then
 		miniWindow.cycle.mobName:SetFontColor(1, 0.5, 0.5)
 	else
 		miniWindow.cycle.mobName:SetFontColor(1, 1, 1)
@@ -50,18 +61,19 @@ local function zoneMenuClick(zone)
 	hideZoneMenu()
 	local lang=Inspect.System.Language()
 	cycle={}
---	print ("zone='"..zone.."'")
-	for name,info in pairs(RareDar_rares[lang]) do
-		if (info ~= false) and (zone == info[1]) and info[5] then
+	for name,info in pairs(RareDar_rares[lang][zone]) do
+		if (info ~= false) and info[3] then
 			local tmpinfo=info
-			tmpinfo[6]=name
-			cycle[tmpinfo[5]]=tmpinfo
+			tmpinfo[4]=zone
+			tmpinfo[5]=name
+			cycle[tmpinfo[3]]=tmpinfo
 		end
 	end
-	for name,info in pairs(RareDar_rares[lang]) do
-		if (info ~= false) and (zone == info[1]) and not info[5] then
+	for name,info in pairs(RareDar_rares[lang][zone]) do
+		if (info ~= false) and (not info[3]) then
 			local tmpinfo=info
-			tmpinfo[6]=name
+			tmpinfo[4]=zone
+			tmpinfo[5]=name
 			table.insert(cycle, tmpinfo)
 		end
 	end
@@ -145,13 +157,9 @@ local function buildMiniWindow()
 
 	local lang=Inspect.System.Language()
 	local zoneNames={}
-	local zoneNameHash={}
         local zoneFound = true
-	for name,info in pairs(RareDar_rares[lang]) do
-		if info ~= false and not zoneNameHash[info[1]] then
-			zoneNameHash[info[1]]=1
-			table.insert(zoneNames, info[1])
-		end
+	for zonename,info in pairs(RareDar_rares[lang]) do
+	    table.insert(zoneNames, zonename)
 	end
 	table.sort(zoneNames);
         if next(zoneNames) == nil then
@@ -248,41 +256,50 @@ function RareDar_SetZoneMobs(list)
                 message=message .. name
 	end
 	if (n>0) then
-	        print(message .. " might be close")
+                if (lastShownMessage ~= message) then
+	              print(message .. " might be close")
+                end
 		miniWindow.itembtn:SetTexture("RareDar", "radargreen.png")
 	else
 		miniWindow.itembtn:SetTexture("RareDar", "radarred.png")
 	end
+        lastShownMessage = message;
+
 	miniWindow.title:SetText("RareDar (" .. n .. ")")
 	miniWindow.itembtn.Event.LeftDown=str
 end
 
 function RareDar_SetCloseMobs()
-   local player=Inspect.Unit.Detail("player");
-   if (not RareDar.secureMode) 
-   and (player.locationName ~= nil)		-- while porting
-   and (player.locationName ~= lastLocationName) then
-      local lang=Inspect.System.Language()
-      --print ("Location is now "..player.locationName)
-      local moblist={}
-      for name, info in pairs(RareDar_rares[lang]) do
-         if info then
-	     --print (name .. "/" .. (info[1] or "x") .. "/" .. (info[2] or "y"))
-	     --dump(info)
-	 end
-         if info
-	 and (
--- TODO: temporary disabled the condition below as it gave too many
---       printouts about rare mob beeing close but actually is not.
---       Is there any better way to locate close mobs?
---     info[1] == player.locationName and info[2] == "" or
-               info[2] == player.locationName
-	     ) then
-	    table.insert(moblist, name)
-	 end
+   if (not RareDar.secureMode) then
+      local player=Inspect.Unit.Detail("player");
+      if ((player.coordX ~= nil) and (player.coordY ~= nil) and
+           ((math.abs(player.coordX - lastCoordX) >= 20) or
+            (math.abs(player.coordZ - lastCoordZ) >= 20))) then
+         local lang=Inspect.System.Language()
+         local moblist={}
+         if (player.zone ~= nil) then
+            local zone=Inspect.Zone.Detail(player.zone)
+            local lang_rares = RareDar_rares[lang]
+            if (lang_rares ~= nil) then
+               local zone_rares = lang_rares[zone.name]
+               if (zone_rares ~= nil) then
+                  for name, info in pairs(zone_rares) do
+                     if info then
+                        local xdist = math.abs(player.coordX - info[1])
+                        local zdist = math.abs(player.coordZ - info[2])
+      	                if (xdist <= 150 and zdist <= 150) then
+                           table.insert(moblist, name)
+                        end
+                     end
+                  end
+      	       end
+            end
+         end
+   
+         RareDar_SetZoneMobs(moblist)
+         lastCoordX = player.coordX;
+         lastCoordZ = player.coordZ;
       end
-      RareDar_SetZoneMobs(moblist)
-      lastLocationName=player.locationName
    end
 end
 

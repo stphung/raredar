@@ -4,7 +4,6 @@
 
 local bar = nil
 local lastShownRare = nil
-local lastLocationName = nil
 
 --- Displays a notification if a rare is found in a list of units.
 --

@@ -39,8 +39,11 @@ local function updateachv(achv)
       name=name:sub(9)
     end
 --  print (req..":"..data.type.."-"..name.."-"..tostring(data.complete))
-    if (RareDar_rares[lang][name]) then
-      RareDar_rares[lang][name][7]=(data.complete or false)
+
+    for zone,info in pairs(RareDar_rares[lang]) do
+      if (info[name]) then
+         info[name][6]=(data.complete or false)
+      end
     end
   end
 end
@@ -50,6 +53,7 @@ local function init(addon)
    if addon == "RareDar" then
       print("loaded!  We'll do our best to let you know when we find a rare mob!")
       print("Type /raredar for options.")
+--      Command.System.Strict()
       RareDar_createUI()
       local id,achv
       for id,achv in ipairs(raremobachvs) do
