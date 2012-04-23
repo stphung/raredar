@@ -5,22 +5,32 @@ Name = {
 }
 
 Description = {
-  English = "An addon designed for hunting down the many rares in Telara."
+  English = "An addon designed for hunting down the many rares in Telara.",
+  Russian = "Дополнение для охотников на редких животных Тэлары."
 }
-Author = "stphung"
-Website = "stevenphung.org"
 
-Version = "0.1.4"
+-- Original author:
+-- Author = "stphung"
+-- Website = "stevenphung.org"
+-- Email = "stphung@gmail.com"
 
-Email = "stphung@gmail.com"
+-- Current maintainer of RareDar
+Email = "karl_johan_karlsson@yahoo.se"
 
-Environment = "1.6"
+Version = "0.2.3"
+
+Environment = "1.8"
+
+SavedVariables = {
+   RareDar = "account",
+}
 
 RunOnStartup = {
+  "config.lua",
   "data.lua",
   "util.lua",
   "notification.lua",
-  "config.lua",
   "notification_handler.lua",
-  "event.lua"
+  "event.lua",
+  "radarbutton.lua",
 }
