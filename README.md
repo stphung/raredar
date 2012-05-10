@@ -1,0 +1,1 @@
+raredar is [moved to ka-ka/raredar](https://github.com/ka-ka/raredar).
